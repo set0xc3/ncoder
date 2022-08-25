@@ -20,7 +20,7 @@ use_scope_highlight = true;
 use_paren_helper = true;
 use_comment_keywords = true;
 lister_whole_word_backspace_when_modified = true;
-show_line_number_margins = false;
+show_line_number_margins = true;
 enable_output_wrapping = false;
 
 enable_undo_fade_out = true;
@@ -29,20 +29,20 @@ enable_undo_fade_out = true;
 // the cursor and mark's roundness as a percentage of their width
 // (At 50 the left and right corners will be so round they form a semi-circle,
 //  hence 50 is the max)
-cursor_roundness = 45;
+cursor_roundness = 0;
 
 // mark_thickness is a pixel count value setting the
 // thickness of the mark wire box in original mode
-mark_thickness = 2;
+mark_thickness = 0;
 
 // lister_roundess is a value [0,50] setting the radius of
 // the lister items' roundness as a percentage of their height
-lister_roundness = 20;
+lister_roundness = 0;
 
 // Code Wrapping
-treat_as_code = ".cpp.c.hpp.h.cc.cs.java.rs.glsl.m.mm";
+treat_as_code = ".cpp.c.hpp.h.glsl";
 enable_virtual_whitespace = true;
-virtual_whitespace_regular_indent = 4;
+virtual_whitespace_regular_indent = 2;
 enable_code_wrapping = true;
 
 // This only applies to code files in code-wrapping mode.
@@ -53,10 +53,13 @@ automatically_indent_text_on_save = true;
 automatically_save_changes_on_build = true;
 
 // Load project on startup
-automatically_load_project = false;
+automatically_load_project = true;
+
+// When set to true, file on changes will be reload
+automatically_reload_file_on_changes = true;
 
 // Indentation
-indent_with_tabs = false;
+indent_with_tabs = true;
 indent_width = 4;
 default_tab_width = 4;
 
@@ -65,8 +68,8 @@ default_theme_name = "4coder";
 
 // Font
 default_font_name = "liberation-mono.ttf";
-default_font_size = 16;
-default_font_hinting = false;
+default_font_size = 14;
+default_font_hinting = true;
 
 // aa modes:
 //  8bit - mono-chrome 0-255 opacity channel per pixel
@@ -74,7 +77,7 @@ default_font_hinting = false;
 default_font_aa_mode = "8bit";
 
 // User
-user_name = "not-set";
+user_name = "set0xc3";
 
 // Keyboard AltGr setting
 lalt_lctrl_is_altgr = false;

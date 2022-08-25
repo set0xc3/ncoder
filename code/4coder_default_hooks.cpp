@@ -897,14 +897,10 @@ BUFFER_HOOK_SIG(default_new_file){
     
     Buffer_Insertion insert = begin_buffer_insertion_at_buffered(app, buffer_id, 0, scratch, KB(16));
     insertf(&insert,
-            "/* date = %.*s */\n"
-            "\n",
-            string_expand(date_string));
-    insertf(&insert,
             "#ifndef %.*s\n"
             "#define %.*s\n"
             "\n"
-            "#endif //%.*s\n",
+            "#endif //%.*s",
             string_expand(guard),
             string_expand(guard),
             string_expand(guard));

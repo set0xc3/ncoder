@@ -13,5 +13,5 @@ then
   ln -frs $ROOT/bin/config.4coder $ROOT/build
 fi
 
-sh $ROOT/code/bin/buildsuper_x64-linux.sh $ROOT/code/4coder_default_bindings.cpp debug
+sh $ROOT/code/bin/buildsuper_x64-linux.sh $ROOT/code/ncoder_layer.cpp debug
 mv -f $ROOT/custom_4coder.so $ROOT/build/custom_4coder.so
