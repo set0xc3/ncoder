@@ -4,7 +4,7 @@ ncoder_setup_essential_mapping(Mapping *mapping, i64 global_id, i64 file_id, i64
     SelectMapping(mapping);
     
     SelectMap(global_id);
-    BindCore(ncoder_startup, CoreCode_Startup);
+    BindCore(default_startup, CoreCode_Startup);
     BindCore(default_try_exit, CoreCode_TryExit);
     BindCore(clipboard_record_clip, CoreCode_NewClipboardContents);
     BindMouseWheel(mouse_wheel_scroll);
