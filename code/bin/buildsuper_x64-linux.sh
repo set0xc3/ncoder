@@ -30,3 +30,5 @@ g++ -I"$CODE_HOME" $arch $opts $debug -std=gnu++0x "$SOURCE" -shared -o custom_4
 
 rm "$CODE_HOME/metadata_generator"
 rm $preproc_file
+rm "$CODE_HOME/generated/command_metadata.h"
+rm "$CODE_HOME/generated/managed_id_metadata.cpp"

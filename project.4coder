@@ -1,5 +1,5 @@
 version(1);
-project_name = "4coder_doom";
+project_name = "ncoder";
 
 patterns = {
     "*.c",
@@ -9,10 +9,6 @@ patterns = {
     "*.sh",
     "*.glsl",
     "*.4coder",
-};
-
-blacklist_patterns =
-{
 };
 
 load_paths_custom =
