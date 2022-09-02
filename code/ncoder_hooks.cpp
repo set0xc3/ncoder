@@ -1,12 +1,17 @@
 CUSTOM_COMMAND_SIG(ncoder_startup)
 CUSTOM_DOC("Default command for responding to a startup event")
 {
-    ProfileScope(app, "default startup");
+    ProfileScope(app, "[ncoder] default startup");
     User_Input input = get_current_input(app);
     if (match_core_code(&input, CoreCode_Startup)){
         String_Const_u8_Array file_names = input.event.core.file_names;
         load_themes_default_folder(app);
-        default_4coder_initialize(app, file_names);
+        
+        Face_Description description = get_face_description(app, 0);
+        ncoder_initialize(app, file_names,
+                          description.parameters.pt_size,
+                          description.parameters.hinting);
+        
         b32 auto_load = def_get_config_b32(vars_save_string_lit("automatically_load_project"));
         if (auto_load){
             load_project(app);
@@ -84,11 +89,95 @@ ncoder_tick(Application_Links *app, Frame_Info frame_info){
     }
 }
 
+BUFFER_HOOK_SIG(ncoder_begin_buffer){
+    ProfileScope(app, "[ncoder] begin buffer");
+    
+    Scratch_Block scratch(app);
+    
+    b32 treat_as_code = false;
+    String_Const_u8 file_name = push_buffer_file_name(app, scratch, buffer_id);
+    if (file_name.size > 0){
+        String_Const_u8 treat_as_code_string = def_get_config_string(scratch, vars_save_string_lit("treat_as_code"));
+        String_Const_u8_Array extensions = parse_extension_line_to_extension_list(app, scratch, treat_as_code_string);
+        String_Const_u8 ext = string_file_extension(file_name);
+        for (i32 i = 0; i < extensions.count; ++i){
+            if (string_match(ext, extensions.strings[i])){
+                
+                if (string_match(ext, string_u8_litexpr("cpp")) ||
+                    string_match(ext, string_u8_litexpr("h")) ||
+                    string_match(ext, string_u8_litexpr("c")) ||
+                    string_match(ext, string_u8_litexpr("hpp")) ||
+                    string_match(ext, string_u8_litexpr("cc"))){
+                    treat_as_code = true;
+                }
+                
+                break;
+            }
+        }
+    }
+    
+    String_ID file_map_id = vars_save_string_lit("keys_file");
+    String_ID code_map_id = vars_save_string_lit("keys_code");
+    
+    Command_Map_ID map_id = (treat_as_code)?(code_map_id):(file_map_id);
+    Managed_Scope scope = buffer_get_managed_scope(app, buffer_id);
+    Command_Map_ID *map_id_ptr = scope_attachment(app, scope, buffer_map_id, Command_Map_ID);
+    *map_id_ptr = map_id;
+    
+    Line_Ending_Kind setting = guess_line_ending_kind_from_buffer(app, buffer_id);
+    Line_Ending_Kind *eol_setting = scope_attachment(app, scope, buffer_eol_setting, Line_Ending_Kind);
+    *eol_setting = setting;
+    
+    // NOTE(allen): Decide buffer settings
+    b32 wrap_lines = true;
+    b32 use_lexer = false;
+    if (treat_as_code){
+        wrap_lines = def_get_config_b32(vars_save_string_lit("enable_code_wrapping"));
+        use_lexer = true;
+    }
+    
+    String_Const_u8 buffer_name = push_buffer_base_name(app, scratch, buffer_id);
+    if (buffer_name.size > 0 && buffer_name.str[0] == '*' && buffer_name.str[buffer_name.size - 1] == '*'){
+        wrap_lines = def_get_config_b32(vars_save_string_lit("enable_output_wrapping"));
+    }
+    
+    if (use_lexer){
+        ProfileBlock(app, "begin buffer kick off lexer");
+        Async_Task *lex_task_ptr = scope_attachment(app, scope, buffer_lex_task, Async_Task);
+        *lex_task_ptr = async_task_no_dep(&global_async_system, do_full_lex_async, make_data_struct(&buffer_id));
+    }
+    
+    {
+        b32 *wrap_lines_ptr = scope_attachment(app, scope, buffer_wrap_lines, b32);
+        *wrap_lines_ptr = wrap_lines;
+    }
+    
+    if (use_lexer){
+        buffer_set_layout(app, buffer_id, layout_virt_indent_index_generic);
+    }
+    else{
+        if (treat_as_code){
+            buffer_set_layout(app, buffer_id, layout_virt_indent_literal_generic);
+        }
+        else{
+            buffer_set_layout(app, buffer_id, layout_generic);
+        }
+    }
+    
+    {
+        //String_ID vim_map_id_normal = vars_save_string_lit("vim_map_id_normal");
+        //ncoder_switch_vim_mapping(app, vim_map_id_normal, 0xff80ff80, 0xff293134, 0xff80ff80);
+    }
+    
+    // no meaning for return
+    return(0);
+}
+
 function void
 ncoder_render_buffer(Application_Links *app, View_ID view_id, Face_ID face_id,
                      Buffer_ID buffer, Text_Layout_ID text_layout_id,
                      Rect_f32 rect){
-    ProfileScope(app, "render buffer");
+    ProfileScope(app, "[ncoder] render buffer");
     
     View_ID active_view = get_active_view(app, Access_Always);
     b32 is_active_view = (active_view == view_id);
@@ -116,27 +205,6 @@ ncoder_render_buffer(Application_Links *app, View_ID view_id, Face_ID face_id,
             };
             draw_comment_highlights(app, buffer, text_layout_id, &token_array, pairs, ArrayCount(pairs));
         }
-        
-#if 0
-        // TODO(allen): Put in 4coder_draw.cpp
-        // NOTE(allen): Color functions
-        
-        Scratch_Block scratch(app);
-        ARGB_Color argb = 0xFFFF00FF;
-        
-        Token_Iterator_Array it = token_iterator_pos(0, &token_array, visible_range.first);
-        for (;;){
-            if (!token_it_inc_non_whitespace(&it)){
-                break;
-            }
-            Token *token = token_it_read(&it);
-            String_Const_u8 lexeme = push_token_lexeme(app, scratch, buffer, token);
-            Code_Index_Note *note = code_index_note_from_string(lexeme);
-            if (note != 0 && note->note_kind == CodeIndexNote_Function){
-                paint_text_color(app, text_layout_id, Ii64_size(token->pos, token->size), argb);
-            }
-        }
-#endif
     }
     else{
         paint_text_color_fcolor(app, text_layout_id, visible_range, fcolor_id(defcolor_text_default));
@@ -222,7 +290,7 @@ ncoder_render_buffer(Application_Links *app, View_ID view_id, Face_ID face_id,
 
 function void
 ncoder_render_caller(Application_Links *app, Frame_Info frame_info, View_ID view_id){
-    ProfileScope(app, "default render caller");
+    ProfileScope(app, "[ncoder] default render caller");
     View_ID active_view = get_active_view(app, Access_Always);
     b32 is_active_view = (active_view == view_id);
     

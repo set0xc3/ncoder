@@ -38,6 +38,7 @@ custom_layer_init(Application_Links *app){
     // NOTE(set0xc3): custom hooks
     {
         set_custom_hook(app, HookID_Tick, ncoder_tick);
+        set_custom_hook(app, HookID_BeginBuffer, ncoder_begin_buffer);
         set_custom_hook(app, HookID_RenderCaller, ncoder_render_caller);
         //set_custom_hook(app, HookID_WholeScreenRenderCaller, ncoder_whole_screen_render_caller);
     }
@@ -46,10 +47,11 @@ custom_layer_init(Application_Links *app){
     String_ID global_map_id = vars_save_string_lit("keys_global");
     String_ID file_map_id = vars_save_string_lit("keys_file");
     String_ID code_map_id = vars_save_string_lit("keys_code");
+    
     setup_default_mapping(&framework_mapping, global_map_id, file_map_id, code_map_id);
 	setup_essential_mapping(&framework_mapping, global_map_id, file_map_id, code_map_id);
     
-    //ncoder_setup_custom_mapping(&framework_mapping, global_map_id, file_map_id, code_map_id);
+    ncoder_setup_custom_mapping(&framework_mapping, global_map_id, file_map_id, code_map_id);
 }
 
 #endif //FNCODER_LAYER

@@ -1,24 +1,35 @@
 function void
-ncoder_setup_essential_mapping(Mapping *mapping, i64 global_id, i64 file_id, i64 code_id){
-    MappingScope();
-    SelectMapping(mapping);
+ncoder_initialize(Application_Links *app, String_Const_u8_Array file_names, i32 override_font_size, b32 override_hinting){
+#define M \
+"Welcome to " VERSION "\n" \
+"If you're new to 4coder there is a built in tutorial\n" \
+"Use the key combination [ X Alt ] (on mac [ X Control ])\n" \
+"Type in 'hms_demo_tutorial' and press enter\n" \
+"\n" \
+"Direct bug reports and feature requests to https://github.com/4coder-editor/4coder/issues\n" \
+"\n" \
+"Other questions and discussion can be directed to editor@4coder.net or 4coder.handmade.network\n" \
+"\n" \
+"The change log can be found in CHANGES.txt\n" \
+"\n"
+    print_message(app, string_u8_litexpr(M));
+#undef M
     
-    SelectMap(global_id);
-    BindCore(default_startup, CoreCode_Startup);
-    BindCore(default_try_exit, CoreCode_TryExit);
-    BindCore(clipboard_record_clip, CoreCode_NewClipboardContents);
-    BindMouseWheel(mouse_wheel_scroll);
-    BindMouseWheel(mouse_wheel_change_face_size, KeyCode_Control);
+    Scratch_Block scratch(app);
     
-    SelectMap(file_id);
-    ParentMap(global_id);
-    BindTextInput(write_text_input);
-    BindMouse(click_set_cursor_and_mark, MouseCode_Left);
-    BindMouseRelease(click_set_cursor, MouseCode_Left);
-    BindCore(click_set_cursor_and_mark, CoreCode_ClickActivateView);
-    BindMouseMove(click_set_cursor_if_lbutton);
+    load_config_and_apply(app, &global_config_arena, override_font_size, override_hinting);
     
-    SelectMap(code_id);
-    ParentMap(file_id);
-    BindTextInput(write_text_and_auto_indent);
+    // open command line files
+    String_Const_u8 hot_directory = push_hot_directory(app, scratch);
+    for (i32 i = 0; i < file_names.count; i += 1){
+        Temp_Memory_Block temp(scratch);
+        String_Const_u8 input_name = file_names.vals[i];
+        String_Const_u8 full_name = push_u8_stringf(scratch, "%.*s/%.*s",
+                                                    string_expand(hot_directory),
+                                                    string_expand(input_name));
+        Buffer_ID new_buffer = create_buffer(app, full_name, BufferCreate_NeverNew|BufferCreate_MustAttachToFile);
+        if (new_buffer == 0){
+            create_buffer(app, input_name, 0);
+        }
+    }
 }
