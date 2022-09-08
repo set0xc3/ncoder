@@ -32,10 +32,9 @@ function void
 ncoder_reload_files_on_changes(Application_Links *app, Buffer_ID buffer){
     b32 auto_reload_file = def_get_config_b32(vars_save_string_lit("automatically_reload_file_on_changes"));
     if (auto_reload_file){
-        
+        // NOTE(set0xc3): This slow
         Dirty_State dirty = buffer_get_dirty_state(app, buffer);
         if (HasFlag(dirty, DirtyState_UnloadedChanges)){
-            
             // Save scroll state.
             View_ID view = get_active_view(app, Access_ReadVisible);
             Buffer_Scroll scroll = view_get_buffer_scroll(app, view);
@@ -59,10 +58,6 @@ ncoder_tick(Application_Links *app, Frame_Info frame_info){
     for (Buffer_ID buffer = view_get_buffer(app, view, Access_ReadVisible);
          buffer != 0;
          buffer = get_buffer_next(app, buffer, Access_ReadWriteVisible)){
-        
-        {
-            ncoder_reload_files_on_changes(app, buffer);
-        }
         
         ////////////////////////////////
         // NOTE(allen): Clear layouts if virtual whitespace setting changed.
@@ -165,8 +160,8 @@ BUFFER_HOOK_SIG(ncoder_begin_buffer){
     }
     
     {
-        //String_ID vim_map_id_normal = vars_save_string_lit("vim_map_id_normal");
-        //ncoder_switch_vim_mapping(app, vim_map_id_normal, 0xff80ff80, 0xff293134, 0xff80ff80);
+        String_ID vim_map_id_normal = vars_save_string_lit("vim_map_id_normal");
+        ncoder_switch_vim_mapping(app, vim_map_id_normal, 0xff80ff80, 0xff293134, 0xff80ff80);
     }
     
     // no meaning for return
@@ -190,6 +185,10 @@ ncoder_render_buffer(Application_Links *app, View_ID view_id, Face_ID face_id,
     u64 cursor_roundness_100 = def_get_config_u64(app, vars_save_string_lit("cursor_roundness"));
     f32 cursor_roundness = metrics.normal_advance*cursor_roundness_100*0.01f;
     f32 mark_thickness = (f32)def_get_config_u64(app, vars_save_string_lit("mark_thickness"));
+    
+    {
+        ncoder_reload_files_on_changes(app, buffer);
+    }
     
     // NOTE(allen): Token colorizing
     Token_Array token_array = get_token_array_from_buffer(app, buffer);
