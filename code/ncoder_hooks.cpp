@@ -47,7 +47,7 @@ ncoder_reload_files_on_changes(Application_Links *app, Buffer_ID buffer){
             
             // Restore scroll state.
             view_set_buffer_scroll(app, view, scroll, SetBufferScroll_SnapCursorIntoView);
-            no_mark_snap_to_cursor(app, view);
+            //no_mark_snap_to_cursor(app, view);
         }
     }
 }
@@ -186,10 +186,6 @@ ncoder_render_buffer(Application_Links *app, View_ID view_id, Face_ID face_id,
     f32 cursor_roundness = metrics.normal_advance*cursor_roundness_100*0.01f;
     f32 mark_thickness = (f32)def_get_config_u64(app, vars_save_string_lit("mark_thickness"));
     
-    {
-        ncoder_reload_files_on_changes(app, buffer);
-    }
-    
     // NOTE(allen): Token colorizing
     Token_Array token_array = get_token_array_from_buffer(app, buffer);
     if (token_array.tokens != 0){
@@ -302,7 +298,6 @@ ncoder_render_caller(Application_Links *app, Frame_Info frame_info, View_ID view
     f32 line_height = face_metrics.line_height;
     f32 digit_advance = face_metrics.decimal_digit_advance;
     
-    
     // NOTE(allen): file bar
     b64 showing_file_bar = false;
     if (view_get_setting(app, view_id, ViewSetting_ShowFileBar, &showing_file_bar) && showing_file_bar){
@@ -357,6 +352,31 @@ ncoder_render_caller(Application_Links *app, Frame_Info frame_info, View_ID view
     
     text_layout_free(app, text_layout_id);
     draw_set_clip(app, prev_clip);
+    
+    // NOTE(set0xc3): Test auto scrolling text
+    {
+        local_persist b32 lock = true;
+        Buffer_ID scratch_buffer = get_buffer_by_name(app, string_u8_litexpr("*compilation*"), Access_Always);
+        Buffer_ID buffer = view_get_buffer(app, view_id, Access_Always);
+        if (buffer == scratch_buffer){
+            i64 boundary = (region.p1.y / line_height) - face_metrics.line_skip;
+            i64 line_count = buffer_get_line_count(app, buffer);
+            if (line_count > boundary){
+                Buffer_Scroll scroll = view_get_buffer_scroll(app, view_id);
+                i64 diff = (line_count-boundary)+1;
+                lock = (diff - scroll.target.line_number >= 6) ? false : true;
+                if (lock && diff > scroll.target.line_number){
+                    scroll.target.line_number = diff;
+                    view_set_buffer_scroll(app, view_id, scroll, SetBufferScroll_SnapCursorIntoView);
+                    no_mark_snap_to_cursor(app, view_id);
+                }
+            }
+        }
+    }
+    
+    {
+        ncoder_reload_files_on_changes(app, buffer);
+    }
 }
 
 function void
