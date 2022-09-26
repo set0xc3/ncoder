@@ -1,6 +1,7 @@
 #!/bin/sh
 
 ROOT=$PWD
+BIN_NAME=4ed-dev
 
 if [ ! -d "$ROOT/build" ];
 then 
@@ -13,5 +14,8 @@ then
   ln -frs $ROOT/bin/config.4coder $ROOT/build
 fi
 
-sh $ROOT/code/bin/buildsuper_x64-linux.sh $ROOT/code/ncoder_layer.cpp debug
-mv -f $ROOT/custom_4coder.so $ROOT/build/custom_4coder.so
+pidof $BIN_NAME >/dev/null
+if [[ $? -ne 0 ]] ; then
+  sh $ROOT/code/bin/buildsuper_x64-linux.sh $ROOT/code/ncoder_layer.cpp debug
+  mv -f $ROOT/custom_4coder.so $ROOT/build/custom_4coder.so
+fi
