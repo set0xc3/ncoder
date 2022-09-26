@@ -55,8 +55,6 @@ automatically_save_changes_on_build = true;
 // Load project on startup
 automatically_load_project = true;
 
-// When set to true, file on changes will be reload
-automatically_reload_file_on_changes = true;
 
 // Indentation
 indent_with_tabs = true;

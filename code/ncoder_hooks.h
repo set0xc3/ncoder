@@ -1,7 +1,7 @@
 #ifndef NCODER_HOOKS_H
 #define NCODER_HOOKS_H
 
-function void ncoder_reload_files_on_changes(Application_Links *app, Buffer_ID buffer);
+function void ncoder_reopen_files_on_unloaded_changes(Application_Links *app, Buffer_ID buffer);
 function void ncoder_tick(Application_Links *app, Frame_Info frame_info);
 
 function void ncoder_render_buffer(Application_Links *app, View_ID view_id, Face_ID face_id,

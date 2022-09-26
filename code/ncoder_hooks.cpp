@@ -29,26 +29,19 @@ CUSTOM_DOC("Default command for responding to a startup event")
 }
 
 function void 
-ncoder_reload_files_on_changes(Application_Links *app, Buffer_ID buffer){
-    b32 auto_reload_file = def_get_config_b32(vars_save_string_lit("automatically_reload_file_on_changes"));
-    if (auto_reload_file){
-        // NOTE(set0xc3): This slow
-        Dirty_State dirty = buffer_get_dirty_state(app, buffer);
-        if (HasFlag(dirty, DirtyState_UnloadedChanges)){
-            // Save scroll state.
-            View_ID view = get_active_view(app, Access_ReadVisible);
-            Buffer_Scroll scroll = view_get_buffer_scroll(app, view);
-            
-            // Reopen the file.
-            Buffer_Reopen_Result result = buffer_reopen(app, buffer, 0);
-            if (HasFlag(result, BufferReopenResult_Failed)){
-                buffer_kill(app, buffer, 0);
-            }
-            
-            // Restore scroll state.
-            view_set_buffer_scroll(app, view, scroll, SetBufferScroll_SnapCursorIntoView);
-            //no_mark_snap_to_cursor(app, view);
-        }
+ncoder_reopen_files_on_unloaded_changes(Application_Links *app, Buffer_ID buffer){
+    // NOTE(set0xc3): This slow
+    Dirty_State dirty = buffer_get_dirty_state(app, buffer);
+    if (HasFlag(dirty, DirtyState_UnloadedChanges)){
+        // Save scroll state.
+        View_ID view = get_active_view(app, Access_ReadVisible);
+        Buffer_Scroll scroll = view_get_buffer_scroll(app, view);
+        
+        // Reopen the file.
+        buffer_reopen(app, buffer, 0);
+        
+        // Restore scroll state.
+        view_set_buffer_scroll(app, view, scroll, SetBufferScroll_SnapCursorIntoView);
     }
 }
 
@@ -375,7 +368,7 @@ ncoder_render_caller(Application_Links *app, Frame_Info frame_info, View_ID view
     }
     
     {
-        ncoder_reload_files_on_changes(app, buffer);
+        ncoder_reopen_files_on_unloaded_changes(app, buffer);
     }
 }
 
