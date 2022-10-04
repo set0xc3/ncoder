@@ -1,0 +1,1 @@
+- [X] Reopen file on unloaded changes

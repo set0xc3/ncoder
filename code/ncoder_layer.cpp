@@ -18,6 +18,7 @@
 #include "ncoder_framework.cpp"
 #include "ncoder_draw.cpp"
 #include "ncoder_map.cpp"
+#include "ncoder_project_commands.cpp"
 
 // NOTE(allen): Users can declare their own managed IDs here.
 

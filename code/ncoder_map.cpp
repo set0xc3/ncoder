@@ -6,11 +6,15 @@ String_ID vim_map_id_replace;
 
 #define ncoder_default_vim_hotkeys() \
 Bind(move_left, KeyCode_H); \
+Bind(move_left_alpha_numeric_boundary, KeyCode_W); \
+Bind(seek_beginning_of_line, KeyCode_H, KeyCode_Shift); \
 Bind(move_down, KeyCode_J); \
 Bind(move_up, KeyCode_K); \
 Bind(move_right, KeyCode_L); \
-Bind(move_left_alpha_numeric_boundary, KeyCode_B); \
-Bind(move_right_alpha_numeric_boundary, KeyCode_E);
+Bind(move_right_alpha_numeric_boundary, KeyCode_E); \
+Bind(seek_end_of_line, KeyCode_L, KeyCode_Shift); \
+Bind(goto_end_of_file, KeyCode_LeftBracket); \
+Bind(goto_beginning_of_file, KeyCode_RightBracket);
 
 function void 
 ncoder_set_current_mapid(Application_Links* app, Command_Map_ID mapid){
@@ -27,7 +31,6 @@ ncoder_switch_vim_mapping(Application_Links* app, Command_Map_ID map_id,
     ncoder_set_current_mapid(app, map_id);
     active_color_table.arrays[defcolor_cursor].vals[0] = color_cursor;
     active_color_table.arrays[defcolor_at_cursor].vals[0] = color_at_cursor;
-    active_color_table.arrays[defcolor_margin_active].vals[0] = color_margin_active;
 }
 
 function void 
@@ -175,7 +178,10 @@ ncoder_setup_custom_mapping(Mapping *mapping, i64 global_id, i64 file_id, i64 co
     Bind(save, KeyCode_S, KeyCode_Control);
     Bind(save_all_dirty_buffers, KeyCode_S, KeyCode_Control, KeyCode_Shift);
     Bind(ncoder_go_to_normal_mode, KeyCode_Escape);
+    
     Bind(interactive_switch_buffer, KeyCode_I, KeyCode_Control);
+    Bind(list_all_functions_all_buffers, KeyCode_I, KeyCode_Control, KeyCode_Shift);
+    
     BindMouse(click_set_cursor_and_mark, MouseCode_Left);
     BindMouseRelease(click_set_cursor, MouseCode_Left);
     BindMouseMove(ncoder_click_set_cursor_if_lbutton);
@@ -203,8 +209,15 @@ ncoder_setup_custom_mapping(Mapping *mapping, i64 global_id, i64 file_id, i64 co
     Bind(ncoder_copy_line, KeyCode_Y);
     Bind(move_line_up, KeyCode_K, KeyCode_Alt);
     Bind(move_line_down, KeyCode_J, KeyCode_Alt);
-    Bind(ncoder_insert_new_line_up, KeyCode_K, KeyCode_Shift);
-    Bind(ncoder_insert_new_line_down, KeyCode_J, KeyCode_Shift);
+    Bind(move_up_10, KeyCode_K, KeyCode_Shift);
+    Bind(move_down_10, KeyCode_J, KeyCode_Shift);
+    Bind(jump_to_definition, KeyCode_D);
+    Bind(jump_to_definition_at_cursor, KeyCode_D, KeyCode_Control);
+    //Bind(jump_to_next_point, KeyCode_P, KeyCode_Control);
+    Bind(jump_to_last_point, KeyCode_P, KeyCode_Control, KeyCode_Shift);
+    
+    //Bind(ncoder_insert_new_line_up, KeyCode_K, KeyCode_Shift);
+    //Bind(ncoder_insert_new_line_down, KeyCode_J, KeyCode_Shift);
     
     SelectMap(vim_map_id_visual);
     ParentMap(vim_map_id_shared);

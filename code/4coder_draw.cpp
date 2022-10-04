@@ -387,7 +387,7 @@ draw_line_number_margin(Application_Links *app, View_ID view_id, Buffer_ID buffe
     draw_rectangle_fcolor(app, margin, 0.f, fcolor_id(defcolor_line_numbers_back));
     
     Range_i64 visible_range = text_layout_get_visible_range(app, text_layout_id);
-    i64 line_count = buffer_get_line_count(app, buffer) + 1;
+    i64 line_count = buffer_get_line_count(app, buffer);
     i64 line_count_digit_count = digit_count_from_integer(line_count, 10);
     
     Fancy_String fstring = {};

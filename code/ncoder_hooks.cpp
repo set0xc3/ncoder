@@ -282,7 +282,7 @@ ncoder_render_caller(Application_Links *app, Frame_Info frame_info, View_ID view
     View_ID active_view = get_active_view(app, Access_Always);
     b32 is_active_view = (active_view == view_id);
     
-    Rect_f32 region = draw_background_and_margin(app, view_id, is_active_view);
+    Rect_f32 region = ncoder_draw_background_and_margin(app, view_id, is_active_view);
     Rect_f32 prev_clip = draw_set_clip(app, region);
     
     Buffer_ID buffer = view_get_buffer(app, view_id, Access_Always);
@@ -326,7 +326,7 @@ ncoder_render_caller(Application_Links *app, Frame_Info frame_info, View_ID view
     b32 show_line_number_margins = def_get_config_b32(vars_save_string_lit("show_line_number_margins"));
     Rect_f32 line_number_rect = {};
     if (show_line_number_margins){
-        Rect_f32_Pair pair = layout_line_number_margin(app, buffer, region, digit_advance);
+        Rect_f32_Pair pair = ncoder_layout_line_number_margin(app, buffer, region, digit_advance);
         line_number_rect = pair.min;
         region = pair.max;
     }
@@ -337,7 +337,7 @@ ncoder_render_caller(Application_Links *app, Frame_Info frame_info, View_ID view
     
     // NOTE(allen): draw line numbers
     if (show_line_number_margins){
-        draw_line_number_margin(app, view_id, buffer, face_id, text_layout_id, line_number_rect);
+        ncoder_draw_line_number_margin(app, view_id, buffer, face_id, text_layout_id, line_number_rect);
     }
     
     // NOTE(allen): draw the buffer
