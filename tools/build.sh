@@ -1,21 +1,15 @@
 #!/bin/sh
 
 ROOT=$PWD
-BIN_NAME=4ed-dev
+NAME=
+PROJECT_DIR=$ROOT/code/custom
+BUILD_DIR=$ROOT/build
 
-if [ ! -d "$ROOT/build" ];
-then 
-  mkdir -p $ROOT/build/
-  ln -frs $ROOT/bin/fonts $ROOT/build
-  ln -frs $ROOT/bin/themes $ROOT/build
-  cp -f $ROOT/bin/4ed $ROOT/build
-  cp -f $ROOT/bin/4ed_app.so $ROOT/build
-  ln -frs $ROOT/bin/bindings.4coder $ROOT/build
-  ln -frs $ROOT/bin/config.4coder $ROOT/build
-fi
+pushd $ROOT/code
+  sh ./bin/build-linux.sh
+popd
 
-pidof $BIN_NAME >/dev/null
-if [[ $? -ne 0 ]] ; then
-  sh $ROOT/code/bin/buildsuper_x64-linux.sh $ROOT/code/ncoder_layer.cpp debug
-  mv -f $ROOT/custom_4coder.so $ROOT/build/custom_4coder.so
-fi
+pushd $PROJECT_DIR
+  sh ./bin/buildsuper_x64-linux.sh ./ncoder_layer.cpp debug
+  mv -f ./custom_4coder.so $BUILD_DIR/custom_4coder.so
+popd

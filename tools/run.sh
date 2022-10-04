@@ -1,14 +1,9 @@
 #!/bin/sh
 
 ROOT=$PWD
-NAME=4ed-dev
+NAME=4ed
 BUILD=$ROOT/build
 
-if [ -d $BUILD ]; then
-  cd $BUILD
-
-  pidof $NAME >/dev/null
-  if [[ $? -ne 0 ]] ; then
-    $BUILD/$NAME
-  fi
-fi
+pushd $BUILD
+  ./$NAME
+popd
