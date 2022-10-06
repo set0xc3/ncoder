@@ -196,7 +196,7 @@ ncoder_setup_custom_mapping(Mapping *mapping, i64 global_id, i64 file_id, i64 co
     Bind(search_identifier, KeyCode_F, KeyCode_Control, KeyCode_Shift);
     Bind(query_replace, KeyCode_R, KeyCode_Control);
     Bind(query_replace_identifier, KeyCode_R, KeyCode_Control, KeyCode_Shift);
-	Bind(command_lister, KeyCode_Semicolon, KeyCode_Shift);
+	Bind(command_lister, KeyCode_X, KeyCode_Alt);
     
     SelectMap(vim_map_id_normal);
     ParentMap(vim_map_id_shared);
@@ -206,14 +206,14 @@ ncoder_setup_custom_mapping(Mapping *mapping, i64 global_id, i64 file_id, i64 co
     ncoder_default_vim_hotkeys();
     Bind(ncoder_paste_after_cursor, KeyCode_P);
     Bind(delete_char, KeyCode_X);
-    Bind(undo, KeyCode_U, KeyCode_Control);
-    Bind(redo, KeyCode_U, KeyCode_Control, KeyCode_Shift);
-    Bind(delete_line, KeyCode_X, KeyCode_Alt);
+    Bind(undo, KeyCode_Z, KeyCode_Control);
+    Bind(redo, KeyCode_Z, KeyCode_Control, KeyCode_Shift);
+    Bind(delete_line, KeyCode_D, KeyCode_Alt);
     Bind(ncoder_copy_line, KeyCode_Y);
     Bind(move_line_up, KeyCode_K, KeyCode_Alt);
     Bind(move_line_down, KeyCode_J, KeyCode_Alt);
-    Bind(jump_to_definition, KeyCode_D);
-    Bind(jump_to_definition_at_cursor, KeyCode_D, KeyCode_Control);
+    Bind(jump_to_definition, KeyCode_W, KeyCode_Control, KeyCode_Shift);
+    Bind(jump_to_definition_at_cursor, KeyCode_W, KeyCode_Control);
     //Bind(jump_to_next_point, KeyCode_P, KeyCode_Control);
     Bind(jump_to_last_point, KeyCode_P, KeyCode_Control, KeyCode_Shift);
     Bind(ncoder_insert_new_line_up, KeyCode_K, KeyCode_Control);
