@@ -256,16 +256,7 @@ ncoder_render_buffer(Application_Links *app, View_ID view_id, Face_ID face_id,
     }
     
     // NOTE(allen): Cursor
-    switch (fcoder_mode){
-        case FCoderMode_Original:
-        {
-            draw_original_4coder_style_cursor_mark_highlight(app, view_id, is_active_view, buffer, text_layout_id, cursor_roundness, mark_thickness);
-        }break;
-        case FCoderMode_NotepadLike:
-        {
-            draw_notepad_style_cursor_highlight(app, view_id, buffer, text_layout_id, cursor_roundness);
-        }break;
-    }
+	ncoder_draw_cursor_mark_highlight(app, view_id, is_active_view, buffer, text_layout_id, cursor_roundness, mark_thickness);
     
     // NOTE(allen): Fade ranges
     paint_fade_ranges(app, text_layout_id, buffer);
@@ -328,6 +319,10 @@ ncoder_render_caller(Application_Links *app, Frame_Info frame_info, View_ID view
     if (show_line_number_margins){
         Rect_f32_Pair pair = ncoder_layout_line_number_margin(app, buffer, region, digit_advance);
         line_number_rect = pair.min;
+		
+		//Vec2_f32 p = bar.p0 + V2f32(2.f, 2.f);
+		//pair.max = Rf32(pair.max.x0 + 8.0f, pair.max.y0, pair.max.x1, pair.max.y1);
+		
         region = pair.max;
     }
     
