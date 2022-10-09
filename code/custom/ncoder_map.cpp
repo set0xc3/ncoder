@@ -10,8 +10,8 @@ Bind(move_left_alpha_numeric_boundary, KeyCode_W); \
 Bind(seek_beginning_of_line, KeyCode_H, KeyCode_Shift); \
 Bind(move_down, KeyCode_J); \
 Bind(move_up, KeyCode_K); \
-Bind(move_up_10, KeyCode_K, KeyCode_Shift); \
-Bind(move_down_10, KeyCode_J, KeyCode_Shift); \
+Bind(move_up_10, KeyCode_U); \
+Bind(move_down_10, KeyCode_D); \
 Bind(move_right, KeyCode_L); \
 Bind(move_right_alpha_numeric_boundary, KeyCode_E); \
 Bind(seek_end_of_line, KeyCode_L, KeyCode_Shift); \
@@ -175,61 +175,65 @@ ncoder_setup_custom_mapping(Mapping *mapping, i64 global_id, i64 file_id, i64 co
     
     SelectMap(vim_map_id_shared);
     ParentMap(global_id);
-    BindCore(ncoder_startup, CoreCode_Startup);
-    BindCore(click_set_cursor_and_mark, CoreCode_ClickActivateView);
-    Bind(save, KeyCode_S, KeyCode_Control);
-    Bind(save_all_dirty_buffers, KeyCode_S, KeyCode_Control, KeyCode_Shift);
-    Bind(ncoder_go_to_normal_mode, KeyCode_Escape);
-    
-    Bind(interactive_switch_buffer, KeyCode_I, KeyCode_Control);
-    Bind(list_all_functions_all_buffers, KeyCode_I, KeyCode_Control, KeyCode_Shift);
-    
-    BindMouse(click_set_cursor_and_mark, MouseCode_Left);
-    BindMouseRelease(click_set_cursor, MouseCode_Left);
+    BindCore(ncoder_startup,               CoreCode_Startup);
+    BindCore(click_set_cursor_and_mark,    CoreCode_ClickActivateView);
+    Bind(save,                             KeyCode_S, KeyCode_Control);
+    Bind(save_all_dirty_buffers,           KeyCode_S, KeyCode_Control, KeyCode_Shift);
+    Bind(ncoder_go_to_normal_mode,         KeyCode_Escape);
+    Bind(interactive_switch_buffer,        KeyCode_I, KeyCode_Control);
+    Bind(list_all_functions_all_buffers,   KeyCode_I, KeyCode_Control, KeyCode_Shift);
     BindMouseMove(ncoder_click_set_cursor_if_lbutton);
-    Bind(comment_line_toggle, KeyCode_Semicolon, KeyCode_Control);
-    Bind(word_complete, KeyCode_Tab);
-    Bind(open_file_in_quotes, KeyCode_1, KeyCode_Alt);
-    Bind(open_matching_file_cpp, KeyCode_2, KeyCode_Alt);
-    Bind(goto_line, KeyCode_G, KeyCode_Control);
-    Bind(search, KeyCode_F, KeyCode_Control);
-    Bind(search_identifier, KeyCode_F, KeyCode_Control, KeyCode_Shift);
-    Bind(query_replace, KeyCode_R, KeyCode_Control);
-    Bind(query_replace_identifier, KeyCode_R, KeyCode_Control, KeyCode_Shift);
-	Bind(command_lister, KeyCode_X, KeyCode_Alt);
+    BindMouse(click_set_cursor_and_mark,   MouseCode_Left);
+    BindMouseRelease(click_set_cursor,     MouseCode_Left);
+	Bind(comment_line_toggle,              KeyCode_Semicolon, KeyCode_Control);
+    Bind(word_complete,                    KeyCode_Tab);
+    Bind(open_file_in_quotes,              KeyCode_1, KeyCode_Alt);
+    Bind(open_matching_file_cpp,           KeyCode_2, KeyCode_Alt);
+    Bind(goto_line,                        KeyCode_G, KeyCode_Control);
+    Bind(search,                           KeyCode_F, KeyCode_Control);
+    Bind(search_identifier,                KeyCode_F, KeyCode_Control, KeyCode_Shift);
+    Bind(query_replace,                    KeyCode_R, KeyCode_Control);
+    Bind(query_replace_identifier,         KeyCode_R, KeyCode_Control, KeyCode_Shift);
+	Bind(command_lister,                   KeyCode_X, KeyCode_Alt);
+	Bind(backspace_alpha_numeric_boundary, KeyCode_Backspace, KeyCode_Control);
+	Bind(backspace_char,                   KeyCode_Backspace);
+	Bind(write_space,                      KeyCode_Space);
     
     SelectMap(vim_map_id_normal);
     ParentMap(vim_map_id_shared);
-    Bind(ncoder_go_to_visual_mode, KeyCode_V);
-    Bind(ncoder_go_to_insert_mode, KeyCode_I);
-    Bind(ncoder_go_to_replace_mode, KeyCode_R);
+    Bind(ncoder_go_to_visual_mode,     KeyCode_V);
+    Bind(ncoder_go_to_insert_mode,     KeyCode_I);
+    Bind(ncoder_go_to_replace_mode,    KeyCode_R);
     ncoder_default_vim_hotkeys();
-    Bind(ncoder_paste_after_cursor, KeyCode_P);
-    Bind(delete_char, KeyCode_X);
-    Bind(undo, KeyCode_Z, KeyCode_Control);
-    Bind(redo, KeyCode_Z, KeyCode_Control, KeyCode_Shift);
-    Bind(delete_line, KeyCode_D, KeyCode_Alt);
-    Bind(ncoder_copy_line, KeyCode_Y);
-    Bind(move_line_up, KeyCode_K, KeyCode_Alt);
-    Bind(move_line_down, KeyCode_J, KeyCode_Alt);
-    Bind(jump_to_definition, KeyCode_W, KeyCode_Control, KeyCode_Shift);
+    Bind(ncoder_paste_after_cursor,    KeyCode_P);
+    Bind(delete_char,                  KeyCode_X);
+    Bind(undo,                         KeyCode_Z, KeyCode_Control);
+    Bind(redo,                         KeyCode_Z, KeyCode_Control, KeyCode_Shift);
+    Bind(delete_line,                  KeyCode_D, KeyCode_Control);
+    Bind(ncoder_copy_line,             KeyCode_Y);
+    Bind(move_line_up,                 KeyCode_K, KeyCode_Alt);
+    Bind(move_line_down,               KeyCode_J, KeyCode_Alt);
+    Bind(jump_to_definition,           KeyCode_W, KeyCode_Control, KeyCode_Shift);
     Bind(jump_to_definition_at_cursor, KeyCode_W, KeyCode_Control);
-    //Bind(jump_to_next_point, KeyCode_P, KeyCode_Control);
-    Bind(jump_to_last_point, KeyCode_P, KeyCode_Control, KeyCode_Shift);
-    Bind(ncoder_insert_new_line_up, KeyCode_K, KeyCode_Control);
-    Bind(ncoder_insert_new_line_down, KeyCode_J, KeyCode_Control);
+    //Bind(jump_to_next_point,           KeyCode_P, KeyCode_Control);
+    Bind(jump_to_last_point,           KeyCode_P, KeyCode_Control, KeyCode_Shift);
+    Bind(ncoder_insert_new_line_up,    KeyCode_K, KeyCode_Shift);
+    Bind(ncoder_insert_new_line_down,  KeyCode_J, KeyCode_Shift);
+	Bind(open_long_braces,             KeyCode_LeftBracket, KeyCode_Control);
+    Bind(open_long_braces_semicolon,   KeyCode_LeftBracket, KeyCode_Control, KeyCode_Shift);
+    Bind(open_long_braces_break,       KeyCode_RightBracket, KeyCode_Control, KeyCode_Shift);
+    
 	
     SelectMap(vim_map_id_visual);
     ParentMap(vim_map_id_shared);
     ncoder_default_vim_hotkeys();
     Bind(ncoder_paste_range, KeyCode_P);
-    Bind(ncoder_copy_range, KeyCode_Y);
-    Bind(ncoder_cut, KeyCode_X);
+    Bind(ncoder_copy_range,  KeyCode_Y);
+    Bind(ncoder_cut,         KeyCode_X);
     
     SelectMap(vim_map_id_insert);
     ParentMap(vim_map_id_shared);
     BindTextInput(write_text_and_auto_indent);
-    Bind(backspace_char, KeyCode_Backspace);
     
     SelectMap(vim_map_id_replace);
     ParentMap(vim_map_id_shared);
