@@ -29,6 +29,72 @@ CUSTOM_DOC("Default command for responding to a startup event")
 }
 
 function void 
+ncoder_draw_keyword_highlights(Application_Links *app, Buffer_ID buffer, Text_Layout_ID text_layout_id, 
+							   Token_Array *array, Highlight_Pair *pairs, i32 pair_count) 
+{
+    Scratch_Block scratch( app );
+    Range_i64 visible_range = text_layout_get_visible_range( app, text_layout_id );
+    i64 first_index = token_index_from_pos( array, visible_range.first );
+    Token_Iterator_Array it = token_iterator_index( buffer, array, first_index );
+    
+    for ( ; ; ) {
+        
+        Temp_Memory_Block temp( scratch );
+        Token *token = token_it_read( &it );
+        if ( token->pos >= visible_range.one_past_last ){
+            break;
+        }
+        
+        String_Const_u8 tail = { 0 };
+        
+        if ( token_it_check_and_get_lexeme( app, scratch, &it, TokenBaseKind_Identifier, &tail ) ){
+            
+            Highlight_Pair *pair = pairs;
+            
+            for ( i32 i = 0; i < pair_count; i += 1, pair += 1 ) {
+                
+                if ( string_match( tail, pair->needle ) ) {
+                    Range_i64 range = Ii64_size( token->pos, token->size );
+                    paint_text_color( app, text_layout_id, range, pair->color );
+                    break;
+                }
+            }
+        }
+        
+        if ( !token_it_inc_non_whitespace( &it ) ){
+            break;
+        }
+    }
+}
+
+function void 
+ncoder_draw_string_highlights(Application_Links *app, Buffer_ID buffer, Text_Layout_ID text_layout_id, 
+							  Highlight_Pair *pairs, i32 pair_count)
+{
+	Range_i64 visible_range = text_layout_get_visible_range( app, text_layout_id );
+    
+    Highlight_Pair* pair = pairs;
+    
+    for ( i32 i = 0; i < pair_count; i += 1, pair += 1 ) {
+        
+        if ( pair->needle.size <= 0 ) {
+            continue;
+        }
+        
+        i64 position = visible_range.min;
+        seek_string_insensitive_forward( app, buffer, position - 1, visible_range.max, pair->needle, &position );
+        
+        while ( position < visible_range.max ) {
+            
+            Range_i64 range = Ii64_size( position, pair->needle.size );
+            paint_text_color( app, text_layout_id, range, pair->color );
+            seek_string_insensitive_forward( app, buffer, position, visible_range.max, pair->needle, &position );
+        }
+    }
+}
+
+
+function void 
 ncoder_reopen_files_on_unloaded_changes(Application_Links *app, Buffer_ID buffer){
     // NOTE(set0xc3): This slow
     Dirty_State dirty = buffer_get_dirty_state(app, buffer);
@@ -181,20 +247,27 @@ ncoder_render_buffer(Application_Links *app, View_ID view_id, Face_ID face_id,
     
     // NOTE(allen): Token colorizing
     Token_Array token_array = get_token_array_from_buffer(app, buffer);
-    if (token_array.tokens != 0){
+    if (token_array.tokens != 0)
+	{
         draw_cpp_token_colors(app, text_layout_id, &token_array);
         
         // NOTE(allen): Scan for TODOs and NOTEs
-        b32 use_comment_keyword = def_get_config_b32(vars_save_string_lit("use_comment_keyword"));
-        if (use_comment_keyword){
-            Comment_Highlight_Pair pairs[] = {
+		// NOTE(set0xc3): NOTE, TODO, IMPORTANT, STUDY
+        b32 use_comment_keyword = def_get_config_b32(vars_save_string_lit("use_comment_keywords"));
+        if (use_comment_keyword)
+		{
+            Comment_Highlight_Pair pairs[] = 
+			{
                 {string_u8_litexpr("NOTE"), finalize_color(defcolor_comment_pop, 0)},
                 {string_u8_litexpr("TODO"), finalize_color(defcolor_comment_pop, 1)},
+				{string_u8_litexpr("IMPORTANT"), 0xFFDB9E00},
+				{string_u8_litexpr("STUDY"), 0xFFDB9E00},
             };
             draw_comment_highlights(app, buffer, text_layout_id, &token_array, pairs, ArrayCount(pairs));
         }
-    }
-    else{
+	}
+    else
+	{
         paint_text_color_fcolor(app, text_layout_id, visible_range, fcolor_id(defcolor_text_default));
     }
     

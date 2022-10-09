@@ -1,6 +1,17 @@
 #ifndef NCODER_HOOKS_H
 #define NCODER_HOOKS_H
 
+struct Highlight_Pair 
+{
+    String_Const_u8 needle;
+    ARGB_Color color;
+};
+
+function void ncoder_draw_keyword_highlights(Application_Links *app, Buffer_ID buffer, Text_Layout_ID text_layout_id, 
+											 Token_Array *array, Highlight_Pair *pairs, i32 pair_count);
+function void ncoder_draw_string_highlights(Application_Links *app, Buffer_ID buffer, Text_Layout_ID text_layout_id, 
+											Highlight_Pair *pairs, i32 pair_count);
+
 function void ncoder_reopen_files_on_unloaded_changes(Application_Links *app, Buffer_ID buffer);
 function void ncoder_tick(Application_Links *app, Frame_Info frame_info);
 
