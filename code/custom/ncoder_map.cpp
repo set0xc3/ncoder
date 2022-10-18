@@ -4,19 +4,25 @@ String_ID vim_map_id_visual;
 String_ID vim_map_id_insert;
 String_ID vim_map_id_replace;
 
-#define ncoder_default_vim_hotkeys() \
-Bind(move_left, KeyCode_H); \
-Bind(move_left_alpha_numeric_boundary, KeyCode_W); \
-Bind(seek_beginning_of_line, KeyCode_H, KeyCode_Shift); \
-Bind(move_down, KeyCode_J); \
-Bind(move_up, KeyCode_K); \
-Bind(move_up_10, KeyCode_U); \
-Bind(move_down_10, KeyCode_D); \
-Bind(move_right, KeyCode_L); \
+#define ncoder_cpp_hotkeys() \
+Bind(open_long_braces,            KeyCode_LeftBracket, KeyCode_Control); \
+Bind(open_long_braces_semicolon,  KeyCode_LeftBracket, KeyCode_Control, KeyCode_Shift); \
+Bind(open_long_braces_break,      KeyCode_RightBracket, KeyCode_Control, KeyCode_Shift); \
+Bind(place_in_scope,              KeyCode_ForwardSlash, KeyCode_Control);
+
+#define ncoder_default_hotkeys() \
+Bind(move_left,                         KeyCode_H); \
+Bind(move_left_alpha_numeric_boundary,  KeyCode_W); \
+Bind(seek_beginning_of_line,            KeyCode_H, KeyCode_Shift); \
+Bind(move_down,                         KeyCode_J); \
+Bind(move_up,                           KeyCode_K); \
+Bind(move_up_10,                        KeyCode_U); \
+Bind(move_down_10,                      KeyCode_D); \
+Bind(move_right,                        KeyCode_L); \
 Bind(move_right_alpha_numeric_boundary, KeyCode_E); \
-Bind(seek_end_of_line, KeyCode_L, KeyCode_Shift); \
-Bind(goto_end_of_file, KeyCode_LeftBracket); \
-Bind(goto_beginning_of_file, KeyCode_RightBracket);
+Bind(seek_end_of_line,                  KeyCode_L, KeyCode_Shift); \
+Bind(goto_end_of_file,                  KeyCode_LeftBracket); \
+Bind(goto_beginning_of_file,            KeyCode_RightBracket);
 
 function void 
 ncoder_set_current_mapid(Application_Links* app, Command_Map_ID mapid){
@@ -201,10 +207,11 @@ ncoder_setup_custom_mapping(Mapping *mapping, i64 global_id, i64 file_id, i64 co
     
     SelectMap(vim_map_id_normal);
     ParentMap(vim_map_id_shared);
+    ncoder_default_hotkeys();
+	ncoder_cpp_hotkeys();
     Bind(ncoder_go_to_visual_mode,     KeyCode_V);
     Bind(ncoder_go_to_insert_mode,     KeyCode_I);
     Bind(ncoder_go_to_replace_mode,    KeyCode_R);
-    ncoder_default_vim_hotkeys();
     Bind(ncoder_paste_after_cursor,    KeyCode_P);
     Bind(delete_char,                  KeyCode_X);
     Bind(undo,                         KeyCode_Z, KeyCode_Control);
@@ -217,22 +224,20 @@ ncoder_setup_custom_mapping(Mapping *mapping, i64 global_id, i64 file_id, i64 co
     Bind(jump_to_definition_at_cursor, KeyCode_W, KeyCode_Control);
     //Bind(jump_to_next_point,           KeyCode_P, KeyCode_Control);
     Bind(jump_to_last_point,           KeyCode_P, KeyCode_Control, KeyCode_Shift);
-    Bind(ncoder_insert_new_line_up,    KeyCode_K, KeyCode_Shift);
-    Bind(ncoder_insert_new_line_down,  KeyCode_J, KeyCode_Shift);
-	Bind(open_long_braces,             KeyCode_LeftBracket, KeyCode_Control);
-    Bind(open_long_braces_semicolon,   KeyCode_LeftBracket, KeyCode_Control, KeyCode_Shift);
-    Bind(open_long_braces_break,       KeyCode_RightBracket, KeyCode_Control, KeyCode_Shift);
-    
+	Bind(ncoder_insert_new_line_up,    KeyCode_K, KeyCode_Shift);
+	Bind(ncoder_insert_new_line_down,  KeyCode_J, KeyCode_Shift);
 	
     SelectMap(vim_map_id_visual);
     ParentMap(vim_map_id_shared);
-    ncoder_default_vim_hotkeys();
+    ncoder_default_hotkeys();
+	ncoder_cpp_hotkeys();
     Bind(ncoder_paste_range, KeyCode_P);
     Bind(ncoder_copy_range,  KeyCode_Y);
     Bind(ncoder_cut,         KeyCode_X);
     
     SelectMap(vim_map_id_insert);
     ParentMap(vim_map_id_shared);
+	ncoder_cpp_hotkeys();
     BindTextInput(write_text_and_auto_indent);
     
     SelectMap(vim_map_id_replace);
