@@ -10,7 +10,7 @@
 // TOP
 
 #define FPS 60
-#define frame_useconds (1000000 / FPS)
+#define frame_useconds (Million(1) / FPS)
 
 #include <stdio.h>
 

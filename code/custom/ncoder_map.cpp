@@ -98,10 +98,6 @@ CUSTOM_COMMAND_SIG(ncoder_paste_range){
 }
 
 CUSTOM_COMMAND_SIG(ncoder_copy_line){
-    View_ID view = get_active_view(app, Access_ReadVisible);
-    Buffer_ID buffer = view_get_buffer(app, view, Access_ReadVisible);
-    Range_i64 range = get_view_range(app, view);
-    
     _copy_line(app);
     set_mark(app);
     ncoder_go_to_normal_mode(app);

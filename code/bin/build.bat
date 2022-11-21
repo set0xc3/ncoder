@@ -20,13 +20,6 @@ set opts=%opts% /GR- /EHa- /nologo /FC /Zi
 set opts=%opts% /I%src_root% /I%custom_root%
 set opts=%opts% %mode%
 
-set FirstError=0
 pushd %build_root%
-call cl %opts% kernel32.lib %bin_root%\4ed_build.cpp /Febuild
-if %ERRORLEVEL% neq 0 (set FirstError=1)
-if %ERRORLEVEL% neq 0 (goto END)
+  call cl %opts% kernel32.lib %bin_root%\4ed_build.cpp /Febuild
 popd
-
-%build_root%\build
-:END
-if %ERRORLEVEL% neq 0 (set FirstError=1)

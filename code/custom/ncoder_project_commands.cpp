@@ -11,9 +11,6 @@ CUSTOM_DOC("Test")
 {
     Scratch_Block scratch(app);
     
-    View_ID view = get_active_view(app, Access_Always);
-    Buffer_ID buffer = view_get_buffer(app, view, Access_Always);
-    
     // NOTE(allen): Load the project file from the hot directory
     String8 project_path = push_hot_directory(app, scratch);
     File_Name_Data dump = dump_file_search_up_path(app, scratch, project_path, string_u8_litexpr("projects.4coder"));
@@ -58,9 +55,6 @@ CUSTOM_COMMAND_SIG(ncoder_save_project)
 CUSTOM_DOC("Test")
 {
     Scratch_Block scratch(app);
-    
-    View_ID view = get_active_view(app, Access_Always);
-    Buffer_ID buffer = view_get_buffer(app, view, Access_Always);
     
     // NOTE(allen): Load the project file from the hot directory
     String8 project_path = push_hot_directory(app, scratch);
