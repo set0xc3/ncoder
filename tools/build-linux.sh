@@ -1,5 +1,9 @@
 #!/bin/sh
 
+echo "-------------------------"
+echo "        [Build]          "
+echo "-------------------------"
+
 ROOT=$PWD
 NAME=
 PROJECT_DIR=$ROOT/code/custom

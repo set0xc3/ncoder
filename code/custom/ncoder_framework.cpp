@@ -10,6 +10,18 @@ ncoder_initialize(Application_Links *app, String_Const_u8_Array file_names, i32 
     
     load_config_and_apply(app, &global_config_arena, override_font_size, override_hinting);
     
+    // load project.4coder file
+    {
+        if(file_names.count != 0)
+        {
+            String_Const_u8 name_hot = string_front_of_path(file_names.vals[file_names.count - 1]);
+            if (string_match(name_hot, string_u8_litexpr("project.4coder")))
+            {
+                set_hot_directory(app, file_names.vals[file_names.count - 1]);
+            }
+        }    
+    }
+
     // open command line files
     String_Const_u8 hot_directory = push_hot_directory(app, scratch);
     for (i32 i = 0; i < file_names.count; i += 1){

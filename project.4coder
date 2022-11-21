@@ -7,13 +7,19 @@ patterns = {
     "*.cpp",
     "*.hpp",
     "*.sh",
+    "*.bash",
     "*.glsl",
     "*.4coder",
+	"*.txt",
+};
+
+blacklist_patterns =
+{
+	".*",
 };
 
 load_paths_custom =
 {
-	{"assets"},
 	{"code"},
 	{"tools"},
 };
@@ -21,29 +27,48 @@ load_paths_custom =
 load_paths =
 {
     { load_paths_custom, .os = "linux"},
+	{ load_paths_custom, .os = "win"  },
 };
+
+build_linux = "./tools/build-linux.sh";
+build_win32 = ".\\tools\\build-win32.bat";
+
+run_linux = "./tools/run-linux.sh";
+run_win32 = ".\\tools\\run-win32.bat";
+
+combo_linux = "./tools/build-linux.sh && ./tools/run-linux.sh";
+combo_win32 = ".\\tools\\build-win32.bat && .\\tools\\run-win32.bat";
 
 command_list =
 {
-	{ 
-        .name = "run",
-        .out = "*compilation*", .footer_panel = true, .save_dirty_files = true,
-        .cmd = { {"tools/run.sh", .os = "linux"}, },
-    },
-    
     { 
         .name = "build",
         .out = "*compilation*", .footer_panel = true, .save_dirty_files = true,
-        .cmd = { {"tools/build.sh", .os = "linux"}, },
+        .cmd = { 
+				{ build_linux, .os ="linux" }, 
+				{ build_win32, .os ="win"   },
+			}, 
     },
     
-	{ 
+    { 
+        .name = "run",
+        .out = "*compilation*", .footer_panel = true, .save_dirty_files = true,
+        .cmd = { 
+				{ run_linux, .os ="linux" }, 
+				{ run_win32, .os ="win"   },
+			}, 
+    },
+	
+    { 
         .name = "combo",
         .out = "*compilation*", .footer_panel = true, .save_dirty_files = true,
-        .cmd = { {"tools/build.sh && tools/run.sh", .os = "linux"}, },
+        .cmd = { 
+				{ combo_linux, .os ="linux" }, 
+				{ combo_win32, .os ="win"   },
+			}, 
     },
 };
 
-fkey_command[5] = "run";
-fkey_command[6] = "build";
+fkey_command[5] = "build";
+fkey_command[6] = "run";
 fkey_command[7] = "combo";

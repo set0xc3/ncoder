@@ -16,7 +16,7 @@ use_file_bars = true;
 hide_file_bar_in_ui = true;
 use_error_highlight = true;
 use_jump_highlight = true;
-use_scope_highlight = true;
+use_scope_highlight = false;
 use_paren_helper = true;
 use_comment_keywords = true;
 lister_whole_word_backspace_when_modified = true;
@@ -42,7 +42,7 @@ lister_roundness = 0;
 // Code Wrapping
 treat_as_code = ".cpp.c.hpp.h.glsl";
 enable_virtual_whitespace = true;
-virtual_whitespace_regular_indent = 2;
+virtual_whitespace_regular_indent = 4;
 enable_code_wrapping = true;
 
 // This only applies to code files in code-wrapping mode.

@@ -1,5 +1,14 @@
 @echo off
 
+if "%VSCMD_INIT%"=="" (
+	call "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Auxiliary\\Build\\vcvarsall.bat" x64
+	set VSCMD_INIT="TRUE"
+)
+
+echo "-------------------------"
+echo "        [Build]            "
+echo "-------------------------"
+
 set ROOT=%cd%
 set NAME=
 set PROJECT_DIR=%ROOT%\\code\\custom
