@@ -181,6 +181,7 @@ struct Win32_Vars{
     
     HWND window_handle;
     f32 screen_scale_factor;
+	i32 monitor_refresh_rate;
     
     DWORD audio_thread_id;
     
@@ -1737,6 +1738,13 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdS
         ReleaseDC(0, dc);
         log_os(" detected dpi %f\n", win32vars.screen_scale_factor);
     }
+	
+	{
+		HDC hdc = GetDC(0);
+		win32vars.monitor_refresh_rate = GetDeviceCaps(hdc, VREFRESH);
+		ReleaseDC(0, hdc);
+		log_os(" detected monitor refresh rate %i\n", win32vars.monitor_refresh_rate);
+	}
     
     // NOTE(allen): load core
     log_os("Loading 4ed core...\n");
@@ -2132,7 +2140,7 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdS
         Application_Step_Input input = {};
         
         input.first_step = win32vars.first;
-        input.dt = frame_useconds/1000000.f;
+        input.dt = (f32)(Million(1) / win32vars.monitor_refresh_rate) / (f32)Million(1);
         input.events = input_chunk.trans.event_list;
         
         input.mouse.out_of_window = input_chunk.trans.out_of_window;
@@ -2235,7 +2243,7 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdS
 		system_release_global_frame_mutex(win32vars.tctx);
         
         u64 timer_end = system_now_time();
-        u64 end_target = timer_start + frame_useconds;
+        u64 end_target = timer_start + (Million(1) / win32vars.monitor_refresh_rate);
         
         for (;timer_end < end_target;){
             DWORD samount = (DWORD)((end_target - timer_end)/1000);

@@ -21,5 +21,7 @@ set opts=%opts% /I%src_root% /I%custom_root%
 set opts=%opts% %mode%
 
 pushd %build_root%
-  call cl %opts% kernel32.lib %bin_root%\4ed_build.cpp /Febuild
+call cl %opts% kernel32.lib %bin_root%\4ed_build.cpp /Febuild
 popd
+
+%build_root%\build
