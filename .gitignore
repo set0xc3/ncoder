@@ -1,2 +1,4 @@
 .vscode
 build
+command_metadata.h
+managed_id_metadata.cpp

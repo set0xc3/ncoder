@@ -1,1 +1,3 @@
 - [X] Reopen file on unloaded changes
+- [X] Load project from open command line
+- [ ] Select project from list "projects.4coder"
